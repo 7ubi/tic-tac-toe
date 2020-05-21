@@ -5,6 +5,7 @@ pygame.init()
 
 screen = pygame.display.set_mode((600, 600))
 pygame.display.set_caption("tic tac toe")
+myfont = pygame.font.SysFont('Arial', 60)
 
 board = [
     [0, 0, 0],
@@ -50,13 +51,37 @@ def winner():
 
     for i in range(3):
         for j in range(3):
-            if board[i][j] != 0:
+            if board[i][j] == 0:
                 o += 1
-        
-    if(o == 0 and winner == None):
+    
+    if(winner == None and o == 0):
         return 0
     else:
         return winner
+        
+
+
+def drawWinner():
+    
+    if winner() == 0:
+        text = myfont.render("It's a tie!", True, (0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (300, 300)
+        screen.blit(text, textRect)
+        pygame.display.update()
+    if winner() == 1:
+        text = myfont.render("Winner is X!", True, (0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (300, 300)
+        screen.blit(text, textRect)
+        pygame.display.update()
+    if winner() == 2:
+        text = myfont.render("Winner is O!", True, (0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (300, 300)
+        screen.blit(text, textRect)
+        pygame.display.update()
+    
 
 scores = [0, -10, 10] #min X max O
 
@@ -64,8 +89,8 @@ def AIMove():
     bestScore = -math.inf
     indexI = 0
     indexJ = 0
-    for j in range(3):
-        for i in range(3):
+    for i in range(3):
+        for j in range(3):
             if board[i][j] != 0:
                 continue
             board[i][j] = Players[1]
@@ -75,7 +100,7 @@ def AIMove():
                 bestScore = score
                 indexI = i
                 indexJ = j
-    board[indexJ][indexI] = Players[1]
+    board[indexI][indexJ] = Players[1]
 
 def minimax(isMaximizing):
     result = winner()
@@ -108,9 +133,17 @@ def minimax(isMaximizing):
         return bestScore
 
 
+def notPlaying():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-def main():
-    currentPlayer = 0
+def playing():
+    screen.fill(pygame.Color(255, 255, 255))
+    drawPlayField()
+    pygame.display.update()
+    AIMove()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -120,12 +153,16 @@ def main():
                 i = int(y / 200)
                 j = int(x / 200)
                 if board[i][j] == 0:
-                    board[i][j] = Players[currentPlayer]
+                    board[i][j] = Players[0]
                     AIMove()
         screen.fill(pygame.Color(255, 255, 255))
         drawPlayField()
         drawBoard()
-        
+        if(winner() != None):
+            drawWinner()
+            pygame.display.update()
+            
+            notPlaying()
         pygame.display.update()
 
-main()
+playing()
