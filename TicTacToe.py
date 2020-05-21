@@ -11,6 +11,8 @@ board = [
     [0, 0, 0]
 ]
 
+Players = [1, 2]
+
 def drawPlayField():
     pygame.draw.rect(screen, pygame.Color(0, 0, 0), (0, 198, 600, 4))
     pygame.draw.rect(screen, pygame.Color(0, 0, 0), (0, 398, 600, 4))
@@ -36,13 +38,11 @@ def winner():
             print(str(board[0][i]) + " has won")
 
     if board[0][0] != 0 and board[0][0] == board[1][1] and board[0][0] == board[2][2]:
-        print(str(board[0][0]) + " has won")
+        return 
+        # print(str(board[0][0]) + " has won")
 
     if board[2][0] != 0  and board[2][0] == board[1][1] and board[2][0] == board[0][2]:
         print(str(board[0][0]) + " has won")
-
-
-        
 
 
 def main():
@@ -56,7 +56,7 @@ def main():
                 i = int(y / 200)
                 j = int(x / 200)
                 if board[i][j] == 0:
-                    board[i][j] = currentPlayer + 1
+                    board[i][j] = Players[currentPlayer]
                     currentPlayer = (currentPlayer + 1)%2
                     winner()
         screen.fill(pygame.Color(255, 255, 255))
