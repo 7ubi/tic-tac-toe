@@ -1,4 +1,5 @@
 import pygame
+import math
 
 pygame.init()
 
@@ -29,24 +30,87 @@ def drawBoard():
                 pygame.draw.circle(screen, pygame.Color(0, 0, 0), (i * 200 + 100, j * 200 + 100), 90, 1)
 
 def winner():
+    winner = None
     for i in range(3):
         if board[i][0] == board[i][1] and board[i][0] == board[i][2] and board[i][0] != 0:
-            print(str(board[i][0]) + " has won")
+            winner = board[i][0]
 
     for i in range(3):
         if board[0][i] == board[1][i] and board[0][i] == board[2][i] and board[0][i] != 0:
-            print(str(board[0][i]) + " has won")
+            winner =  board[0][i]
 
     if board[0][0] != 0 and board[0][0] == board[1][1] and board[0][0] == board[2][2]:
-        return 
-        # print(str(board[0][0]) + " has won")
+        winner = board[0][0]
+        
 
     if board[2][0] != 0  and board[2][0] == board[1][1] and board[2][0] == board[0][2]:
-        print(str(board[0][0]) + " has won")
+        winner = board[2][0]
+    
+    o = 0
+
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] != 0:
+                o += 1
+        
+    if(o == 0 and winner == None):
+        return 0
+    else:
+        return winner
+
+scores = [0, -10, 10] #min X max O
+
+def AIMove():
+    bestScore = -math.inf
+    indexI = 0
+    indexJ = 0
+    for j in range(3):
+        for i in range(3):
+            if board[i][j] != 0:
+                continue
+            board[i][j] = Players[1]
+            score = minimax(False)
+            board[i][j] = 0
+            if score > bestScore:
+                bestScore = score
+                indexI = i
+                indexJ = j
+    board[indexJ][indexI] = Players[1]
+
+def minimax(isMaximizing):
+    result = winner()
+    if result != None:
+        return scores[result]
+    
+    if isMaximizing: #o
+        bestScore = -math.inf
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] != 0:
+                    continue
+                board[i][j] = Players[1]
+                score = minimax(False)
+                board[i][j] = 0
+                if score > bestScore:
+                    bestScore = score
+        return bestScore
+    else:
+        bestScore = math.inf
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] != 0:
+                    continue
+                board[i][j] = Players[0]
+                score = minimax(True)
+                board[i][j] = 0
+                if score < bestScore:
+                    bestScore = score
+        return bestScore
+
 
 
 def main():
-    currentPlayer = 1
+    currentPlayer = 0
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -57,8 +121,7 @@ def main():
                 j = int(x / 200)
                 if board[i][j] == 0:
                     board[i][j] = Players[currentPlayer]
-                    currentPlayer = (currentPlayer + 1)%2
-                    winner()
+                    AIMove()
         screen.fill(pygame.Color(255, 255, 255))
         drawPlayField()
         drawBoard()
