@@ -64,23 +64,29 @@ def winner():
 def drawWinner():
     
     if winner() == 0:
-        text = myfont.render("It's a tie!", True, (0, 0, 0))
+        text = myfont.render("It's a tie!", True, (255, 0, 0))
         textRect = text.get_rect()
-        textRect.center = (300, 300)
+        textRect.center = (300, 200)
         screen.blit(text, textRect)
         pygame.display.update()
     if winner() == 1:
-        text = myfont.render("Winner is X!", True, (0, 0, 0))
+        text = myfont.render("Winner is X!", True, (255, 0, 0))
         textRect = text.get_rect()
-        textRect.center = (300, 300)
+        textRect.center = (300, 200)
         screen.blit(text, textRect)
         pygame.display.update()
     if winner() == 2:
-        text = myfont.render("Winner is O!", True, (0, 0, 0))
+        text = myfont.render("Winner is O!", True, (255, 0, 0))
         textRect = text.get_rect()
-        textRect.center = (300, 300)
+        textRect.center = (300, 200)
         screen.blit(text, textRect)
         pygame.display.update()
+    restart = myfont.render("Press any key to restart!", True, (255, 0, 0))
+    restartRect = restart.get_rect()
+    restartRect.center = (300, 400)
+    screen.blit(restart, restartRect)
+    pygame.display.update()
+    
     
 
 scores = [0, -10, 10] #min X max O
@@ -139,11 +145,20 @@ def notPlaying():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
+            if event.type == pygame.KEYDOWN:
+                global board
+                board = [
+                    [0, 0, 0],
+                    [0, 0, 0],
+                    [0, 0, 0]
+                ]               
+                playing()
+
 def playing():
     screen.fill(pygame.Color(255, 255, 255))
     drawPlayField()
     pygame.display.update()
-    AIMove()
+    board[0][0] = 2
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
