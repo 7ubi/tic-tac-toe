@@ -158,7 +158,7 @@ def playing():
     screen.fill(pygame.Color(255, 255, 255))
     drawPlayField()
     pygame.display.update()
-    board[0][0] = 2
+    board[1][1] = 2
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
